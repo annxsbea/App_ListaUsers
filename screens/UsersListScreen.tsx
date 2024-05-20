@@ -3,7 +3,6 @@ import { View, Text, Button, ActivityIndicator, StyleSheet, FlatList, TouchableO
 import { getUsers } from '../services/api';
 import { NavigationScreenProp } from 'react-navigation';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Notification from '../componentes /Notification';
 
 
 interface User {
@@ -19,16 +18,13 @@ const UsersListScreen: React.FC<{ navigation: NavigationScreenProp<ScreenProps> 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
-  const notifyMessage = (msg: string) => {
-    return <Notification message={msg} />;
-  };
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const data = await getUsers();
         setUsers(data);
       } catch (error) {
-        notifyMessage('Erro ao carregar Users: ' );
+        showToast('Erro ao carregar Users: ' );
       } finally {
         setLoading(false);
       }
@@ -39,7 +35,9 @@ const UsersListScreen: React.FC<{ navigation: NavigationScreenProp<ScreenProps> 
   const handleUserPress = (userId: string) => {
     navigation.navigate('UserDetails', { userId });
   };
-  
+  const showToast = (message: string) => {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+};
 
   const handleCreateUserPress = () => {
     navigation.navigate('UserDetails');
@@ -47,7 +45,7 @@ const UsersListScreen: React.FC<{ navigation: NavigationScreenProp<ScreenProps> 
 
   if (loading) {
     return <ActivityIndicator style={styles.loader} size="large" color="#343476" />;
-
+    
   }
 
 
