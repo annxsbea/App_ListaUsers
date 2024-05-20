@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import { getUserById, createUser, editUser, deleteUser } from '../services/api';
 
 const UserDetailsScreen = ({ route, navigation }) => {
@@ -7,6 +7,10 @@ const UserDetailsScreen = ({ route, navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
   const userId = route.params?.userId;
 
+
+  const showToast = (message: string) => {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+};
   useEffect(() => {
     if (userId) {
       fetchUserDetails(userId);
@@ -21,16 +25,19 @@ const UserDetailsScreen = ({ route, navigation }) => {
     }
   };
 
+
   const handleSave = async () => {
     if (isEditing) {
       const updatedUser = await editUser(userId, user);
       if (updatedUser) {
         navigation.goBack();
+        showToast('User editado com sucesso!');
       }
     } else {
       const newUser = await createUser(user);
       if (newUser) {
         navigation.goBack();
+        showToast('User criado com sucesso!');
       }
     }
   };
@@ -39,6 +46,7 @@ const UserDetailsScreen = ({ route, navigation }) => {
     const deletedUser = await deleteUser(userId);
     if (deletedUser) {
       navigation.goBack();
+      showToast('User deletado com sucesso!');
     }
   };
 
